@@ -1,0 +1,612 @@
+openapi: 3.0.0
+info:
+  title: Qin Todo
+  description: Qin Todoアプリ(Team K)
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:3000'
+    description: local server
+paths:
+  /api/v1/auth/google:
+    get:
+      tags:
+        - auth
+      summary: google認証
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/AuthResponse'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/token/refresh:
+    get:
+      tags:
+        - auth
+      summary: トークンリフレッシュ
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/TokenRefreshResponse'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/users:
+    get:
+      tags:
+        - user
+      summary: アクセストークンに紐づくユーザー情報の取得
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/User'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/users/{userId}:
+    put:
+      tags:
+        - user
+      summary: ユーザー情報の更新
+      parameters:
+        - in: path
+          name: "userId"
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/User'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '403':
+          $ref: '#components/responses/ForbiddenException'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+    delete:
+      tags:
+        - user
+      summary: ユーザー情報の削除、関連するTodo情報も削除する
+      parameters:
+        - in: path
+          name: "userId"
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: 削除成功
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '403':
+          $ref: '#components/responses/ForbiddenException'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/users/{userId}/avatar:
+    put:
+      tags:
+        - user
+      summary: ユーザー画像の更新
+      parameters:
+        - in: path
+          name: "userId"
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/UpdateAvatarRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/User'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '403':
+          $ref: '#components/responses/ForbiddenException'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/todos:
+    get:
+      tags:
+        - todo
+      summary: todo一覧取得
+      operationId: todoList
+      responses:
+        '200':
+          description: 取得
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/AllTodoResponse'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+    post:
+      tags:
+        - todo
+      summary: todo作成
+      operationId: createTodo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/CreateTodoRequest'
+      responses:
+        '200':
+          description: 作成成功
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Todo'
+        '400':
+          $ref: '#components/responses/BadRequest'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/todos/{todoId}:
+    put:
+      tags:
+        - todo
+      summary: todo内容変更
+      operationId: updateTodo
+      parameters:
+        - in: path
+          name: "todoId"
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#components/schemas/CreateTodoRequest'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Todo'
+        '400':
+          $ref: '#components/responses/BadRequest'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '403':
+          $ref: '#components/responses/ForbiddenException'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+    delete:
+      tags:
+        - todo
+      summary: todo削除
+      operationId: deleteTodo
+      parameters:
+        - in: path
+          name: "todoId"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 削除成功
+        '400':
+          $ref: '#components/responses/BadRequest'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '403':
+          $ref: '#components/responses/ForbiddenException'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/todos/{todoId}/duplicate:
+    post:
+      tags:
+        - todo
+      summary: todo複製
+      operationId: duplicateTodo
+      parameters:
+        - in: path
+          name: "todoId"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 複製成功
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Todo'
+        '400':
+          $ref: '#components/responses/BadRequest'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '403':
+          $ref: '#components/responses/ForbiddenException'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/todos/{todoId}/toggle:
+    put:
+      tags:
+        - todo
+      summary: todo完了・未完了
+      operationId: toggleTodo
+      parameters:
+        - in: path
+          name: "todoId"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: todoステータス 未完了・完了変更
+          content:
+            application/json:
+              schema:
+                $ref: '#components/schemas/Todo'
+        '400':
+          $ref: '#components/responses/BadRequest'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '403':
+          $ref: '#components/responses/ForbiddenException'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+  /api/v1/todos/{todoId}/order:
+    put:
+      tags:
+        - todo
+      summary: todo並び替え
+      operationId: changeOrderTodo
+      parameters:
+        - in: path
+          name: "todoId"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 並び替え成功
+        '400':
+          $ref: '#components/responses/BadRequest'
+        '401':
+          $ref: '#components/responses/Unauthorized'
+        '403':
+          $ref: '#components/responses/ForbiddenException'
+        '500':
+          $ref: '#components/responses/InternalServerError'
+tags:
+  - name: auth
+    description: Auth
+  - name: user
+    description: Access to Users
+  - name: todo
+    description: Access to todos
+
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      description: Credentials or access token for API
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ユーザーID
+          example: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'
+        username:
+          type: string
+          description: ユーザー名
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          description: email
+          example: 'john@example.com'
+        avatarUrl:
+          type: string
+          format: uri
+          description: avatar画像url
+          example: 'https://gravatar.com/avatar/3cb5628734a944573d67a5871b1dcbfb?s=400&d=robohash&r=x'
+      required:
+        - id
+    Todo:
+      title: Todo
+      type: object
+      properties:
+        id:
+          type: integer
+          description: todoID
+        userId:
+          type: string
+          description: ユーザーID
+        status:
+          type: string
+          enum: [TODAY, TOMORROW, NEXT]
+          description: いつやるかのStatus
+        done:
+          type: boolean
+          description: 完了・未完了
+        content:
+          type: string
+          description: todoの内容
+        createdAt:
+          type: string
+          format: date-time
+          description: 作成日
+        updatedAt:
+          type: string
+          format: date-time
+          description: 更新日
+      example:
+        id: 1
+        userId: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'
+        status: 'TODAY'
+        done: false
+        content: '犬の散歩'
+        createdAt: '2022-02-28T12:13:56.933Z'
+        updatedAt: '2022-02-28T12:13:56.933Z'
+      required:
+        - id
+        - userId
+        - status
+        - done
+        - content
+        - createdAt
+        - updatedAt
+    Error:
+      title: Error
+      description: エラー
+      type: object
+      properties:
+        status:
+          type: string
+          description: 独自のエラーステータス。エラーの識別子
+        error:
+          type: string
+          description: エラーの内容
+      required:
+        - status
+        - error
+    AuthResponse:
+      title: AuthResponse
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: アクセストークン
+        refreshToken:
+          type: string
+          description: リフレッシュトークン
+        user:
+          $ref: "#components/schemas/User"
+      required:
+        - accessToken
+        - refreshToken
+        - user
+    TokenRefreshResponse:
+      title: TokenRefreshResponse
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: アクセストークン
+        refreshToken:
+          type: string
+          description: リフレッシュトークン
+      required:
+        - accessToken
+        - refreshToken
+    AllTodoResponse:
+      title: AllTodoResponse
+      type: object
+      properties:
+        TODAY:
+          type: array
+          description: 今日やるTodo
+          items:
+            $ref: '#components/schemas/Todo'
+          example:
+            - id: 1
+              userId: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'
+              status: 'TODAY'
+              done: false
+              content: '犬の散歩'
+              createdAt: '2022-02-28T12:13:56.933Z'
+              updatedAt: '2022-02-28T12:13:56.933Z'
+            - id: 4
+              userId: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'
+              status: 'TODAY'
+              done: false
+              content: '北の国から録画'
+              createdAt: '2022-02-28T12:13:56.933Z'
+              updatedAt: '2022-02-28T12:13:56.933Z'
+        TOMORROW:
+          type: array
+          description: 今日やるTodo
+          items:
+            $ref: '#components/schemas/Todo'
+          example:
+            - id: 2
+              userId: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'
+              status: 'TOMORROW'
+              done: true
+              content: '畑の水やり'
+              createdAt: '2022-02-28T12:13:56.933Z'
+              updatedAt: '2022-02-28T12:13:56.933Z'
+        NEXT:
+          type: array
+          description: 今日やるTodo
+          items:
+            $ref: '#components/schemas/Todo'
+          example:
+            - id: 3
+              userId: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'
+              status: 'NEXT'
+              done: false
+              content: 'タンクのお掃除'
+              createdAt: '2022-02-28T12:13:56.933Z'
+              updatedAt: '2022-02-28T12:13:56.933Z'
+      required:
+        - TODAY
+        - TOMORROW
+        - NEXT
+    UpdateUserRequest:
+      title: UpdateUserRequest
+      type: object
+      properties:
+        username:
+          type: string
+          description: ユーザー名
+      required:
+        - username
+      example:
+        username: 'John Doe'
+    UpdateAvatarRequest:
+      title: UpdateAvatarRequest
+      type: object
+      properties:
+        base64Image:
+          type: string
+          description: アップロードする画像のbase64データ
+        mimeType:
+          type: string
+          description: アップロードする画像のmimeType
+      required:
+        - base64Image
+        - mimeType
+    CreateTodoRequest:
+      title: CreateTodoRequest
+      type: object
+      properties:
+        content:
+          type: string
+          description: todoの内容
+        status:
+          type: string
+          enum: [TODAY, TOMORROW, NEXT]
+          description: いつ行うか
+      required:
+        - content
+        - status
+      example:
+        status: 'TODAY'
+        content: '犬の散歩'
+    UpdateTodoRequest:
+      title: UpdateTodoRequest
+      type: object
+      properties:
+        content:
+          type: string
+          description: todoの内容
+        status:
+          type: string
+          enum: [TODAY, TOMORROW, NEXT]
+          description: いつ行うか
+      required:
+        - content
+        - status
+      example:
+        status: 'TODAY'
+        content: '犬の散歩'
+  responses:
+    BadRequest:
+      description: 不正なリクエスト
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            BadRequest:
+              summary: 入力内容が不正
+              value:
+                status: bad_request
+                error: 入力内容に誤りがあります
+    Unauthorized:
+      description: 認証エラーが発生した場合
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            InvalidAccessToken:
+              summary: アクセストークンが不正
+              value:
+                status: invalid_access_token
+                error: アクセストークンが不正です
+            ExpiredAccessToken:
+              summary: アクセストークンの有効期限切れ
+              value:
+                status: expired_access_token
+                error: アクセストークンの有効期限が切れています
+    NotFound:
+      description: 該当データなし
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            NotFound:
+              summary: 該当するデータなし
+              value:
+                status: not_found
+                error: 該当するデータはありません
+    ForbiddenException:
+      description: 権限のないデータへのアクセスをした場合
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            ForbiddenException:
+              summary: データへのアクセス権なし
+              value:
+                status: not_allowed_to_access_data
+                error: データへのアクセス権がありません
+    InternalServerError:
+      description: サーバーエラーが発生した場合
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            ForbiddenException:
+              summary: サーバーエラー
+              value:
+                status: not_allowed_to_access_data
+                error: サーバーエラーが発生しました

@@ -18,11 +18,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/AuthResponse'
+                $ref: '#/components/schemas/AuthResponse'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/token/refresh:
     get:
       tags:
@@ -34,11 +34,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/TokenRefreshResponse'
+                $ref: '#/components/schemas/TokenRefreshResponse'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/users:
     get:
       tags:
@@ -50,16 +50,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/User'
+                $ref: '#/components/schemas/User'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/users/{userId}:
     put:
       tags:
         - user
-      summary: ユーザー情報の更新
+      summary: ユーザー情報更新
       parameters:
         - in: path
           name: "userId"
@@ -71,20 +71,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/UpdateUserRequest'
+              $ref: '#/components/schemas/UpdateUserRequest'
       responses:
         '200':
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/User'
+                $ref: '#/components/schemas/User'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#components/responses/ForbiddenException'
+          $ref: '#/components/responses/ForbiddenException'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
         - user
@@ -100,11 +100,11 @@ paths:
         '200':
           description: 削除成功
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#components/responses/ForbiddenException'
+          $ref: '#/components/responses/ForbiddenException'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/users/{userId}/avatar:
     put:
       tags:
@@ -121,20 +121,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/UpdateAvatarRequest'
+              $ref: '#/components/schemas/UpdateAvatarRequest'
       responses:
         '200':
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/User'
+                $ref: '#/components/schemas/User'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#components/responses/ForbiddenException'
+          $ref: '#/components/responses/ForbiddenException'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/todos:
     get:
       tags:
@@ -147,11 +147,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/AllTodoResponse'
+                $ref: '#/components/schemas/AllTodoResponse'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
     post:
       tags:
         - todo
@@ -161,20 +161,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/CreateTodoRequest'
+              $ref: '#/components/schemas/CreateTodoRequest'
       responses:
         '200':
           description: 作成成功
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/Todo'
+                $ref: '#/components/schemas/Todo'
         '400':
-          $ref: '#components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/todos/{todoId}:
     put:
       tags:
@@ -191,22 +191,22 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#components/schemas/CreateTodoRequest'
+              $ref: '#/components/schemas/CreateTodoRequest'
       responses:
         '200':
           description: 更新成功
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/Todo'
+                $ref: '#/components/schemas/Todo'
         '400':
-          $ref: '#components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#components/responses/ForbiddenException'
+          $ref: '#/components/responses/ForbiddenException'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
         - todo
@@ -222,13 +222,13 @@ paths:
         '200':
           description: 削除成功
         '400':
-          $ref: '#components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#components/responses/ForbiddenException'
+          $ref: '#/components/responses/ForbiddenException'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/todos/{todoId}/duplicate:
     post:
       tags:
@@ -247,15 +247,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/Todo'
+                $ref: '#/components/schemas/Todo'
         '400':
-          $ref: '#components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#components/responses/ForbiddenException'
+          $ref: '#/components/responses/ForbiddenException'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/todos/{todoId}/toggle:
     put:
       tags:
@@ -274,15 +274,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/Todo'
+                $ref: '#/components/schemas/Todo'
         '400':
-          $ref: '#components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#components/responses/ForbiddenException'
+          $ref: '#/components/responses/ForbiddenException'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
   /api/v1/todos/{todoId}/order:
     put:
       tags:
@@ -299,13 +299,13 @@ paths:
         '200':
           description: 並び替え成功
         '400':
-          $ref: '#components/responses/BadRequest'
+          $ref: '#/components/responses/BadRequest'
         '401':
-          $ref: '#components/responses/Unauthorized'
+          $ref: '#/components/responses/Unauthorized'
         '403':
-          $ref: '#components/responses/ForbiddenException'
+          $ref: '#/components/responses/ForbiddenException'
         '500':
-          $ref: '#components/responses/InternalServerError'
+          $ref: '#/components/responses/InternalServerError'
 tags:
   - name: auth
     description: Auth
@@ -414,7 +414,7 @@ components:
           type: string
           description: リフレッシュトークン
         user:
-          $ref: "#components/schemas/User"
+          $ref: "#/components/schemas/User"
       required:
         - accessToken
         - refreshToken
@@ -440,7 +440,7 @@ components:
           type: array
           description: 今日やるTodo
           items:
-            $ref: '#components/schemas/Todo'
+            $ref: '#/components/schemas/Todo'
           example:
             - id: 1
               userId: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'
@@ -460,7 +460,7 @@ components:
           type: array
           description: 今日やるTodo
           items:
-            $ref: '#components/schemas/Todo'
+            $ref: '#/components/schemas/Todo'
           example:
             - id: 2
               userId: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'
@@ -473,7 +473,7 @@ components:
           type: array
           description: 今日やるTodo
           items:
-            $ref: '#components/schemas/Todo'
+            $ref: '#/components/schemas/Todo'
           example:
             - id: 3
               userId: '4ff64eb1-c22a-4455-a50d-75cdc3c1e561'

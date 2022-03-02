@@ -1,26 +1,40 @@
-name: Deploy Redoc
+name: OpenAPI Build and Push HTML to S3
+
 on:
   push:
     branches:
-      - main
-    paths:
-      - "swagger.yaml"
+      - test
 
 jobs:
   build:
-    name: build Html
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    strategy:
+      matrix:
+        node: ["12.4.0"]
     steps:
-    - uses: action/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ap-northeast-1
+      - name: node setting
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
 
-    - name: Upload
-      id: Upload
-      run: aws s3 cp . s3://qin-todo-swagger/swagger --exclude "*" --include "swagger.yaml" --include "index.html" --recursive
+      - name: install redoc
+        run: npm install -g redoc-cli
+
+      - name: build openAPI file
+        run: redoc-cli bundle ./swagger.yaml
+
+      - name: Output file contents
+        run: cat ./redoc-static.html
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+
+      - name: S3 copy
+        run: aws s3 cp ./redoc-static.html s3://qin-todo-swagger/swagger/index.html

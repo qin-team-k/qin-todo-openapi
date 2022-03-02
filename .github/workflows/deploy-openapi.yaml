@@ -1,0 +1,26 @@
+name: Deploy Redoc
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "swagger.yaml"
+
+jobs:
+  build:
+    name: build Html
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - uses: action/checkout@v2
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-1
+
+    - name: Upload
+      id: Upload
+      run: aws s3 cp . s3://qin-todo-swagger/swagger --exclude "*" --include "swagger.yaml" --include "index.html" --recursive

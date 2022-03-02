@@ -59,7 +59,7 @@ paths:
     put:
       tags:
         - user
-      summary: ユーザー情報更新
+      summary: ユーザー情報の更新
       parameters:
         - in: path
           name: "userId"

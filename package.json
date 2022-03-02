@@ -1,0 +1,24 @@
+{
+  "name": "qin-todo-openapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "redoc-cli test petstore.yaml",
+    "bundle": "redoc-cli bundle petstore.yaml -o docs/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/novr/redoc-sample.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/novr/redoc-sample/issues"
+  },
+  "homepage": "https://github.com/novr/redoc-sample#readme",
+  "devDependencies": {
+    "redoc-cli": "^0.13.0"
+  }
+}

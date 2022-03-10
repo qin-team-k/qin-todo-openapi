@@ -3,7 +3,7 @@ name: OpenAPI Build and Push HTML to S3
 on:
   push:
     branches:
-      - test
+      - main
 
 jobs:
   build:

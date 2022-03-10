@@ -345,6 +345,9 @@ components:
           example: 'https://gravatar.com/avatar/3cb5628734a944573d67a5871b1dcbfb?s=400&d=robohash&r=x'
       required:
         - id
+        - username
+        - email
+        - avatarUrl
     Todo:
       title: Todo
       type: object
